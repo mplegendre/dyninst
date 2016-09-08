@@ -2459,7 +2459,6 @@ bool Object::fix_global_symbol_modules_static_dwarf()
         convertDebugOffset(start + len, actual_end);
         Module* m = associated_symtab->getOrCreateModule(modname, actual_start);
         m->addRange(actual_start, actual_end);
-//        cout << hex << "Set range from dw_aranges: " << modname << ": [" << actual_start << ", " << actual_end << ")" << endl;
         m->setDebugInfo(cu_die);
         dies_seen.insert(cu_die_off);
         dwarf_dealloc(dbg, ranges[i], DW_DLA_ARANGE);
@@ -2503,11 +2502,7 @@ bool Object::fix_global_symbol_modules_static_dwarf()
     }
     dwarf_dealloc(dbg, ranges, DW_DLA_LIST);
 
-//    ModuleFixer m(dbg, this);
-//    bool result = m.parse();
-//    freeList.push_back(m.getFreeList());
-//    return result;
-
+    return true;
 }
 
 #else
