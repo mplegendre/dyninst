@@ -2511,8 +2511,6 @@ bool Object::fix_global_symbol_modules_static_dwarf()
         dies_seen.insert(cu_die_off);
 
     }
-    dwarf_dealloc(dbg, ranges, DW_DLA_LIST);
-
     return true;
 }
 
