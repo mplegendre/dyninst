@@ -69,7 +69,7 @@ class Symtab;
  * class Symbol
 ************************************************************************/
 
-class SYMTAB_EXPORT Symbol : public Serializable,
+class SYMTAB_EXPORT Symbol :
                public AnnotatableSparse 
 {
    friend class typeCommon;

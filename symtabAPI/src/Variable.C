@@ -115,8 +115,7 @@ bool Variable::removeSymbol(Symbol *sym)
 
 localVar::localVar(std::string name,  Type *typ, std::string fileName, 
 		int lineNum, FunctionBase *f, std::vector<VariableLocation> *locs) :
-	Serializable(),
-	name_(name), 
+	name_(name),
 	type_(typ), 
 	fileName_(fileName), 
 	lineNum_(lineNum),
@@ -131,8 +130,7 @@ localVar::localVar(std::string name,  Type *typ, std::string fileName,
 	}
 }
 
-localVar::localVar(localVar &lvar) :
-	Serializable()
+localVar::localVar(localVar &lvar)
 {
 	name_ = lvar.name_;
 	type_ = lvar.type_;

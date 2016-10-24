@@ -244,8 +244,6 @@ bool Aggregate::changeSymbolOffset(Symbol *sym)
     return true;
 }
 
-extern Symbol * getSymForID(SerializerBase *sb, Address id);
-
 std::ostream &operator<<(std::ostream &os, const Dyninst::SymtabAPI::Aggregate &a)
 {
   std::string modname = a.module_ ? a.module_->fullName() : std::string("no_mod");

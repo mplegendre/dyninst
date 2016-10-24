@@ -46,16 +46,6 @@
 using namespace Dyninst;
 using namespace SymtabAPI;
 
-bool addSymID(SerializerBase *, Symbol *, Address)
-{
-   return false;
-}
-
-Symbol * getSymForID(SerializerBase *, Address)
-{
-   return NULL;
-}
-
 
 Symbol *Symbol::magicEmitElfSymbol() {
 	// I have no idea why this is the way it is,

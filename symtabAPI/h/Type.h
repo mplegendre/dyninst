@@ -102,7 +102,7 @@ SYMTAB_EXPORT const char *visibility2Str(visibility_t v);
 
 #define FIELD_ANNOTATABLE_CLASS AnnotatableDense
 
-class SYMTAB_EXPORT Field : public Serializable, public FIELD_ANNOTATABLE_CLASS 
+class SYMTAB_EXPORT Field : public FIELD_ANNOTATABLE_CLASS
 {
    friend class typeStruct;
    friend class typeUnion;
@@ -366,7 +366,7 @@ class SYMTAB_EXPORT typeCommon : public fieldListType {
    void endCommonBlock(Symbol *, void *baseAddr);
 };
 
-class SYMTAB_EXPORT CBlock : public Serializable, public AnnotatableSparse
+class SYMTAB_EXPORT CBlock : public AnnotatableSparse
 {
    friend class typeCommon;
  private:

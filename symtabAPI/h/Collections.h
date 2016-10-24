@@ -73,7 +73,7 @@ public:
  * Due to DWARF weirdness, this can be shared between multiple BPatch_modules.
  * So we reference-count to make life easier.
  */
-class SYMTAB_EXPORT typeCollection : public Serializable//, public AnnotatableSparse 
+class SYMTAB_EXPORT typeCollection
 {
     friend class Symtab;
     friend class Object;

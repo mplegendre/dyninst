@@ -51,7 +51,7 @@ class Aggregate;
 class Function;
 class FunctionBase;
 
-class SYMTAB_EXPORT Variable : public Aggregate, public Serializable, public AnnotatableSparse {
+class SYMTAB_EXPORT Variable : public Aggregate, public AnnotatableSparse {
 	friend class Symtab;
 	friend std::ostream &::operator<<(std::ostream &os, const Dyninst::SymtabAPI::Variable &);
 

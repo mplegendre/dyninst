@@ -1715,7 +1715,6 @@ unsigned int Field::getSize()
 }
 
 Field::Field(Field &oField) :
-	Serializable(),
 	FIELD_ANNOTATABLE_CLASS()
 {
    type_ = oField.type_;

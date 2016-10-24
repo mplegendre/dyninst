@@ -91,7 +91,6 @@ typedef IBSTree<FuncRange> FuncRangeLookup;
 typedef Dyninst::ProcessReader MemRegReader;
 
 class SYMTAB_EXPORT Symtab : public LookupInterface,
-               public Serializable,
                public AnnotatableSparse
 {
    friend class Archive;

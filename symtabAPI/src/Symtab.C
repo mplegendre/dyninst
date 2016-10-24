@@ -406,7 +406,6 @@ SYMTAB_EXPORT Symtab::Symtab(MappedFile *mf_) :
 
 SYMTAB_EXPORT Symtab::Symtab() :
    LookupInterface(),
-   Serializable(),
    AnnotatableSparse(),
    member_offset_(0),
    parentArchive_(NULL),
@@ -1213,7 +1212,6 @@ Module *Symtab::newModule(const std::string &name, const Offset addr, supportedL
 
 Symtab::Symtab(std::string filename, bool defensive_bin, bool &err) :
    LookupInterface(),
-   Serializable(),
    AnnotatableSparse(),
    member_offset_(0),
    parentArchive_(NULL),
@@ -1285,7 +1283,6 @@ Symtab::Symtab(std::string filename, bool defensive_bin, bool &err) :
 Symtab::Symtab(unsigned char *mem_image, size_t image_size, 
                const std::string &name, bool defensive_bin, bool &err) :
    LookupInterface(),
-   Serializable(),
    AnnotatableSparse(),
    member_offset_(0),
    parentArchive_(NULL),
@@ -1595,7 +1592,6 @@ bool Symtab::extractInfo(Object *linkedFile)
 
 Symtab::Symtab(const Symtab& obj) :
    LookupInterface(),
-   Serializable(),
    AnnotatableSparse(),
    member_name_(obj.member_name_),
    member_offset_(obj.member_offset_),
@@ -1964,25 +1960,6 @@ bool Symtab::openFile(Symtab *&obj, std::string filename, def_t def_binary)
    }
 
 
-#if defined (cap_serialization)
-#if 0
-   obj = importBin(filename);
-
-   if (NULL == obj) 
-   {
-	   if (deserializeEnforced<Symtab>(filename))
-	  {
-			  serialize_printf("%s[%d]: aborting new symtab, expected deserialize failed\n",
-					  FILE__, __LINE__);
-			  return false;
-	  }
-   }
-   else 
-   {
-      return true;
-   }
-#endif
-#endif
 
    obj = new Symtab(filename, (def_binary == Defensive), err);
 
@@ -2776,8 +2753,7 @@ SYMTAB_EXPORT ExceptionBlock::ExceptionBlock(Offset tStart,
 }
 
 SYMTAB_EXPORT ExceptionBlock::ExceptionBlock(const ExceptionBlock &eb) :
-   Serializable(),
-   tryStart_(eb.tryStart_), trySize_(eb.trySize_), 
+   tryStart_(eb.tryStart_), trySize_(eb.trySize_),
    catchStart_(eb.catchStart_), hasTry_(eb.hasTry_),
    tryStart_ptr(eb.tryStart_ptr),
    tryEnd_ptr(eb.tryEnd_ptr),
