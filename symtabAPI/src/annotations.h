@@ -55,7 +55,7 @@ extern AnnotationClass<localVarCollection> FunctionParametersAnno;
 extern AnnotationClass<std::vector<std::string> > SymbolVersionNamesAnno;
 extern AnnotationClass<std::string> SymbolFileNameAnno;
 extern AnnotationClass<std::vector<Function *> > UserFuncsAnno;
-extern AnnotationClass<std::vector<Region *> > UserRegionsAnno; 
+extern AnnotationClass<std::vector<Region *> > UserRegionsAnno;
 extern AnnotationClass<std::vector<Type *> > UserTypesAnno;
 extern AnnotationClass<std::vector<Symbol *> > UserSymbolsAnno;
 extern AnnotationClass<LineInformation> ModuleLineInfoAnno;

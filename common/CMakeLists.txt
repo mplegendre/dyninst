@@ -29,8 +29,8 @@ set (SRC_LIST
     src/Annotatable.C 
     src/MappedFile.C 
     src/sha1.C 
-    src/serialize-bin.C 
-    src/serialize-xml.C 
+#    src/serialize-bin.C
+#    src/serialize-xml.C
     src/util.C 
     src/Node.C 
     src/Graph.C 

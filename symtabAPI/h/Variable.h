@@ -74,7 +74,7 @@ class SYMTAB_EXPORT Variable : public Aggregate, public AnnotatableSparse {
    Type *type_;
 };
 
-class SYMTAB_EXPORT localVar : public Serializable, public AnnotatableSparse
+class SYMTAB_EXPORT localVar : public AnnotatableSparse
 {
 	friend class typeCommon;
 	friend class localVarCollection;

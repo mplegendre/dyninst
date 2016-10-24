@@ -140,7 +140,7 @@ class SYMTAB_EXPORT Field : public FIELD_ANNOTATABLE_CLASS
 				  
 #define TYPE_ANNOTATABLE_CLASS AnnotatableDense
 
-class SYMTAB_EXPORT Type : public Serializable, public  TYPE_ANNOTATABLE_CLASS 
+class SYMTAB_EXPORT Type : public  TYPE_ANNOTATABLE_CLASS
 {
    friend class typeCollection;
    friend std::string parseStabString(Module *, int linenum, char *, int, 

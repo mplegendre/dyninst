@@ -621,7 +621,7 @@ class SYMTAB_EXPORT Symtab : public LookupInterface,
  **/
 SYMTAB_EXPORT  std::ostream &operator<<(std::ostream &os, const ExceptionBlock &q);
 
-class SYMTAB_EXPORT ExceptionBlock : public Serializable, public AnnotatableSparse {
+class SYMTAB_EXPORT ExceptionBlock : public AnnotatableSparse {
   // Accessors provide consistent access to the *original* offsets.
   // We allow this to be updated (e.g. to account for relocated code
    public:

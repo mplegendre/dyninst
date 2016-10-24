@@ -50,15 +50,7 @@ namespace Dyninst
 {
 
 
-class SerializerBase;
-class Serializable;
-typedef Serializable * (*ser_func_t) (void *, SerializerBase *, const char *);
 
-#if !defined(SERIALIZATION_DISABLED)
-#define serialize_printf serializer_printf
-COMMON_EXPORT int serializer_printf(const char *format, ...);
-COMMON_EXPORT Serializable * ser_func_wrapper(void *it, SerializerBase *sb,  const char *tag);
-#endif
 COMMON_EXPORT bool annotation_debug_flag();
 COMMON_EXPORT int annotatable_printf(const char *format, ...);
 
@@ -70,7 +62,6 @@ extern bool void_ptr_cmp_func(void *, void *);
 
 class COMMON_EXPORT AnnotationClassBase
 {
-	friend class Serializable;
    private:
       static std::vector<AnnotationClassBase *> *annotation_types;
       static dyn_hash_map<std::string, AnnotationClassID> *annotation_ids_by_name;
@@ -80,11 +71,7 @@ class COMMON_EXPORT AnnotationClassBase
 
    protected:
 
-	  ser_func_t serialize_func;
-
-     AnnotationClassBase(std::string n, 
-                                       anno_cmp_func_t cmp_func_ = NULL, 
-                                       ser_func_t sf_ = NULL);
+    AnnotationClassBase(std::string n, anno_cmp_func_t cmp_func_);
 
      virtual ~AnnotationClassBase(); 
 
@@ -96,8 +83,8 @@ class COMMON_EXPORT AnnotationClassBase
        AnnotationClassID getID() { return id; }
        std::string &getName() {return name;}
        anno_cmp_func_t getCmpFunc() {return cmp_func;}
-	   ser_func_t getSerializeFunc() {return serialize_func;}
-	   virtual const char *getTypeName() = 0;
+
+    virtual const char *getTypeName() = 0;
 	   virtual void *allocate() = 0;
 };
 
@@ -105,10 +92,8 @@ template <class T>
 class AnnotationClass : public AnnotationClassBase {
    public:
 
-	  AnnotationClass(std::string n, 
-			  anno_cmp_func_t cmp_func_ = NULL, 
-			  ser_func_t s = NULL) :
-		  AnnotationClassBase(n, cmp_func_, s)
+	  AnnotationClass(std::string n, anno_cmp_func_t cmp_func_) :
+              AnnotationClassBase(n, cmp_func_)
 	  {
 #if !defined(SERIALIZATION_DISABLED)
 		if (NULL == s)
@@ -171,23 +156,9 @@ COMMON_EXPORT const char *serPostOp2Str(ser_post_op_t);
 
 class AnnotatableDense;
 class AnnotatableSparse;
-COMMON_EXPORT bool is_input(SerializerBase *sb);
-COMMON_EXPORT bool is_output(SerializerBase *sb);
-COMMON_EXPORT unsigned short get_serializer_index(SerializerBase *sb);
-COMMON_EXPORT bool ser_operation(SerializerBase *, ser_post_op_t &, const char *);
-COMMON_EXPORT bool add_annotations(SerializerBase *, AnnotatableDense *, std::vector<ser_rec_t> &);
-COMMON_EXPORT bool add_annotations(SerializerBase *, AnnotatableSparse *, std::vector<ser_rec_t> &);
-#if !defined(SERIALIZATION_DISABLED)
-COMMON_EXPORT bool serialize_annotation_list(void *, std::vector<ser_rec_t> &, SerializerBase *sb, const char *);
-COMMON_EXPORT SerializerBase *getExistingOutputSB(unsigned short);
-COMMON_EXPORT bool serialize_post_annotation(void *, void *, SerializerBase *, AnnotationClassBase *acb, sparse_or_dense_anno_t, const char *);
-#endif
 
 class COMMON_EXPORT AnnotatableDense
 {
-	friend  bool COMMON_EXPORT add_annotations(SerializerBase *, AnnotatableDense *, std::vector<ser_rec_t> &);
-	friend class SerializerBase;
-	friend class Serializable;
 	typedef void *anno_list_t;
 
 	/**
@@ -365,83 +336,6 @@ class COMMON_EXPORT AnnotatableDense
          return true;
       }
 
-#if !defined(SERIALIZATION_DISABLED)
-     void serializeAnnotations(SerializerBase *sb, const char *tag)
-	  {
-		  serialize_printf("%s[%d]:  welcome to serializeAnotations:\n", FILE__, __LINE__);
-		  //  iterator over possible annotation types
-		  //  if we have any, lookup the serialization function and call it
-
-		  std::vector<ser_rec_t> my_sers;
-		  if (is_output(sb))
-		  {
-			  //  need to figure out how many annotations will be serialized apriori
-			  //  so we can output the size of the list as a header.
-			  //  To avoid iterating over the full list twice, make a local copy
-			  //  of all serializations/deserializations that need to be performed
-			  //  as we go, and do them in bulk afterwards.
-
-			  if (annotations)
-			  {
-				  for (AnnotationClassID id = 0; id < annotations->max; ++id)
-				  {
-					  void *anno = annotations->data[id];
-					  if (anno)
-					  {
-						  AnnotationClassBase *acb = AnnotationClassBase::findAnnotationClass(id);
-
-						  if (!acb)
-						  {
-							  fprintf(stderr, "%s[%d]:  FIXME:  no annotation class for id %d\n", 
-									  FILE__, __LINE__, id);
-							  continue;
-						  }
-
-						  ser_func_t sf = acb->getSerializeFunc();
-
-						  if (NULL != sf)
-						  {
-							  ser_rec_t sr;
-							  sr.data = anno;
-							  sr.acb = acb;
-							  sr.parent_id = (void *) this;
-							  sr.sod = dense;
-							  my_sers.push_back(sr);
-						  }
-					  }
-				  }
-
-				  annotations->serializer_index = get_serializer_index(sb);
-				  serialize_printf("%s[%d]:  %p set serializer index to %d\n", 
-						  FILE__, __LINE__, this, annotations->serializer_index);
-			  }
-			  else
-			  {
-				  //  need to alloc struct to store serializer index
-				  annotations = (aInfo *) malloc(sizeof(aInfo));
-				  annotations->data = NULL;
-				  annotations->max = 0;
-				  annotations->serializer_index = get_serializer_index(sb);
-				  serialize_printf("%s[%d]:  %p set serializer index to %d\n", 
-						  FILE__, __LINE__, this, annotations->serializer_index);
-			  }
-		  }
-
-		  if (!serialize_annotation_list(this, my_sers, sb, tag))
-		  {
-			  fprintf(stderr, "%s[%d]:  FIXME:  failed to serialize annotation list\n", 
-					  FILE__, __LINE__);
-		  }
-		  if (!add_annotations(sb, this, my_sers))
-		  {
-			  fprintf(stderr, "%s[%d]:  failed to update annotation list after deserialize\n", 
-					  FILE__, __LINE__);
-		  }
-	  }
-#else
-	  void serializeAnnotations(SerializerBase *, const char *) {
-     }
-#endif
 	  void annotationsReport()
 	  {
 		  std::vector<AnnotationClassBase *> atypes;
@@ -480,12 +374,8 @@ class COMMON_EXPORT AnnotatableDense
 
 class COMMON_EXPORT AnnotatableSparse
 {
-	friend class SerializerBase;
-	friend class Serializable;
-	friend  bool COMMON_EXPORT add_annotations(SerializerBase *, 
-			AnnotatableSparse *, std::vector<ser_rec_t> &);
 
-   public:
+public:
       struct void_ptr_hasher
       {
          size_t operator()(const void* a) const
@@ -863,70 +753,7 @@ class COMMON_EXPORT AnnotatableSparse
 	      return false;
 	  }
 
-    void serializeAnnotations(SerializerBase *sb, const char *)
-	  {
-		  annos_t &l_annos = *getAnnos();
-		  std::vector<ser_rec_t> my_sers;
-            void *obj = this;
-			if (is_output(sb))
-			{
-				for (AnnotationClassID id = 0; id < l_annos.size(); ++id)
-				{
-					annos_by_type_t *abt = getAnnosOfType(id, false /*don't do create */);
-					if (NULL == abt) continue;
-
-					annos_by_type_t::iterator iter = abt->find(obj);
-
-					if (iter == abt->end()) 
-					{
-						//	fprintf(stderr, "%s[%d]:  nothing for this obj\n", FILE__, __LINE__);
-						continue;
-					}
-
-					//  we have an annotation of this type for this object, find the serialization
-					//  function and call it (if it exists)
-
-					AnnotationClassBase *acb =  AnnotationClassBase::findAnnotationClass(id);
-					if (!acb)
-					{
-						fprintf(stderr, "%s[%d]:  FIXME, cannot find annotation class base for id %d, mode = %s\n", FILE__, __LINE__, id, is_input(sb) ? "deserialize" : "serialize");
-						continue;
-					}
-
-					ser_func_t sf = acb->getSerializeFunc();
-
-					if (NULL == sf)
-					{
-						continue;
-					}
-
-					ser_rec_t sr;
-					sr.acb = acb;
-					sr.data = iter->second;
-					sr.parent_id = (void *) this;
-					sr.sod = sparse;
-					my_sers.push_back(sr);
-				}
-
-					ser_ndx_map[this] = get_serializer_index(sb);
-			}
-
-#if !defined(SERIALIZATION_DISABLED)
-			if (!serialize_annotation_list(this, my_sers, sb, tag))
-			{
-				fprintf(stderr, "%s[%d]:  FIXME:  failed to serialize annotation list\n", 
-						FILE__, __LINE__);
-			}
-#endif
-
-			if (!add_annotations(sb, this, my_sers))
-			{
-				fprintf(stderr, "%s[%d]:  failed to update annotation list after deserialize\n", 
-						FILE__, __LINE__);
-			}
-	  }
-
-	  void annotationsReport()
+		void annotationsReport()
 	  {
 		  std::vector<AnnotationClassBase *> atypes;
 		  annos_t &l_annos = *getAnnos();

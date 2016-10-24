@@ -32,9 +32,6 @@
 #include "common/h/Annotatable.h"
 
 #if defined(SERIALIZATION_DISABLED)
-unsigned short Dyninst::get_serializer_index(Dyninst::SerializerBase *) {
-  return 0;
-}
 
 
 #else

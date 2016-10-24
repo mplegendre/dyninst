@@ -32,14 +32,14 @@
 
 #include "annotations.h"
 
-AnnotationClass<localVarCollection> FunctionLocalVariablesAnno("FunctionLocalVariablesAnno");
-AnnotationClass<localVarCollection> FunctionParametersAnno("FunctionParametersAnno");
-AnnotationClass<std::vector<std::string> > SymbolVersionNamesAnno("SymbolVersionNamesAnno");
-AnnotationClass<std::string> SymbolFileNameAnno("SymbolFileNameAnno");
-AnnotationClass<std::vector<Function *> > UserFuncsAnno("UserFuncsAnno");
-AnnotationClass<std::vector<Region *> > UserRegionsAnno("UserRegionsAnno");
-AnnotationClass<std::vector<Type *> > UserTypesAnno("UserTypesAnno");
-AnnotationClass<std::vector<Symbol *> > UserSymbolsAnno("UserSymbolsAnno");
-AnnotationClass<LineInformation> ModuleLineInfoAnno("ModuleLineInfoAnno");
-AnnotationClass<typeCollection> ModuleTypeInfoAnno("ModuleTypeInfoAnno");
-AnnotationClass<dyn_hash_map<Address, Symbol *> > IdToSymAnno("IdToSymMap");
+AnnotationClass<localVarCollection> FunctionLocalVariablesAnno("FunctionLocalVariablesAnno", nullptr);
+AnnotationClass<localVarCollection> FunctionParametersAnno("FunctionParametersAnno", nullptr);
+AnnotationClass<std::vector<std::string> > SymbolVersionNamesAnno("SymbolVersionNamesAnno", nullptr);
+AnnotationClass<std::string> SymbolFileNameAnno("SymbolFileNameAnno", nullptr);
+AnnotationClass<std::vector<Function *> > UserFuncsAnno("UserFuncsAnno", nullptr);
+AnnotationClass<std::vector<Region *> > UserRegionsAnno("UserRegionsAnno", nullptr);
+AnnotationClass<std::vector<Type *> > UserTypesAnno("UserTypesAnno", nullptr);
+AnnotationClass<std::vector<Symbol *> > UserSymbolsAnno("UserSymbolsAnno", nullptr);
+AnnotationClass<LineInformation> ModuleLineInfoAnno("ModuleLineInfoAnno", nullptr);
+AnnotationClass<typeCollection> ModuleTypeInfoAnno("ModuleTypeInfoAnno", nullptr);
+AnnotationClass<dyn_hash_map<Address, Symbol *> > IdToSymAnno("IdToSymMap", nullptr);

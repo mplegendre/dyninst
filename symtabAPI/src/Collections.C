@@ -68,7 +68,7 @@ localVarCollection::~localVarCollection()
  * for function.
  */
 
-bool localVarCollection::addItem_impl(localVar * var)
+bool localVarCollection::addItem(localVar * var)
 {
   localVars.push_back(var);
   return true;

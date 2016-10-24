@@ -52,11 +52,12 @@ class DwarfWalker;
  */
 
 
-class SYMTAB_EXPORT localVarCollection : public AnnotationContainer<localVar *> {
+class SYMTAB_EXPORT localVarCollection /*: public AnnotationContainer<localVar *>*/
+{
   
   std::vector<localVar* > localVars;
   
-  bool addItem_impl(localVar *);
+  bool addItem(localVar *var);
 public:
   localVarCollection(){}
   ~localVarCollection();
