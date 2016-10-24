@@ -28,14 +28,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <stdio.h>
-#include <vector>
-
 #include "common/h/dyntypes.h"
 #include "common/h/Annotatable.h"
-#include "common/src/serialize.h"
-#include "common/src/Types.h"
-#include "common/src/headers.h"
 
 #if defined(SERIALIZATION_DISABLED)
 unsigned short Dyninst::get_serializer_index(Dyninst::SerializerBase *) {

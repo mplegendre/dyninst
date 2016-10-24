@@ -32,6 +32,11 @@ namespace Dyninst {
                 > StringTable;
 
         typedef boost::shared_ptr<StringTable> StringTablePtr;
+        inline int insert_into_table(StringTablePtr table, std::string s) {
+            auto name_iter = table->get<1>().insert(s).first;
+            auto ra_iter = table->project<0>(name_iter);
+            return ra_iter - table->begin();
+        }
 
         inline std::ostream& operator<<(std::ostream& s, StringTableEntry e)
         {

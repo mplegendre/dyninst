@@ -38,10 +38,8 @@
 
 #include "common/src/Timer.h"
 #include "common/src/debugOstream.h"
-#include "common/src/serialize.h"
 #include "common/src/pathName.h"
 
-#include "Serialization.h"
 #include "Symtab.h"
 #include "Module.h"
 #include "Collections.h"
@@ -3110,72 +3108,6 @@ bool relocationEntry::operator==(const relocationEntry &r) const
 	return true;
 }
 
-#if !defined(SERIALIZATION_DISABLED)
-Serializable *relocationEntry::serialize_impl(SerializerBase *sb, const char *tag) THROW_SPEC (SerializerError)
-{
-	//  on deserialize need to rebuild symtab::undefDynSyms before deserializing relocations
-
-	std::string symname = dynref_ ? dynref_->getName() : std::string("");
-	Offset symoff = dynref_ ? dynref_->getOffset() : (Offset) -1;
-
-      ifxml_start_element(sb, tag);
-      gtranslate(sb, target_addr_, "targetAddress");
-      gtranslate(sb, rel_addr_, "relocationAddress");
-      gtranslate(sb, addend_, "Addend");
-      gtranslate(sb, name_, "relocationName");
-      gtranslate(sb,  rtype_, Region::regionType2Str, "regionType");
-      gtranslate(sb, relType_, "relocationType");
-      gtranslate(sb, symname, "SymbolName");
-      gtranslate(sb, symoff, "SymbolOffset");
-      ifxml_end_element(sb, tag);
-
-	  if (sb->isInput())
-	  {
-		  dynref_ = NULL;
-		  if (symname != std::string(""))
-		  {
-			  SerContextBase *scb = sb->getContext();
-			  if (!scb)
-			  {
-				  SER_ERR("FIXME");
-			  }
-
-			  SerContext<Symtab> *scs = dynamic_cast<SerContext<Symtab> *>(scb);
-
-			  if (!scs)
-			  {
-				  SER_ERR("FIXME");
-			  }
-
-			  Symtab *st = scs->getScope();
-
-			  if (!st)
-			  {
-				  SER_ERR("FIXME");
-			  }
-
-			  std::vector<Symbol *> *syms = st->findSymbolByOffset(symoff);
-			  if (!syms || !syms->size())
-			  {
-				  serialize_printf("%s[%d]:  cannot find symbol by offset %p\n", 
-						  FILE__, __LINE__, (void *)symoff);
-				  return NULL;
-			  }
-
-			  //  Might want to try to select the "best" symbol here if there is
-			  //  more than one.  Or Maybe just returning the first is sufficient.
-
-			  dynref_ = (*syms)[0];
-		  }
-	  }
-	  return NULL;
-}
-#else
-Serializable *relocationEntry::serialize_impl(SerializerBase *, const char *) THROW_SPEC (SerializerError)
-{
-   return NULL;
-}
-#endif
 
 ostream & Dyninst::SymtabAPI::operator<< (ostream &os, const relocationEntry &r) 
 {

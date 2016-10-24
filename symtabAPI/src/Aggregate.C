@@ -29,22 +29,15 @@
  */
 #include "dyntypes.h"
 #include "Annotatable.h"
-#include "Serialization.h"
-#include "common/src/serialize.h"
 
 #include "Symtab.h"
-#include "symutil.h"
-#include "Module.h"
 #include "Collections.h"
 
 #include "Function.h"
-#include "Variable.h"
 
 #include "symtabAPI/src/Object.h"
 
 #include "debug.h"
-#include "Aggregate.h"
-#include "Symbol.h"
 
 using namespace std;
 using namespace Dyninst;

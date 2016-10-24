@@ -34,13 +34,8 @@
 #include "symutil.h"
 #include "debug.h"
 #include "Collections.h"
-#include "Symtab.h"
-#include "Module.h"
-#include "Variable.h"
-#include "Serialization.h"
 
 #include "common/src/headers.h"
-#include "common/src/serialize.h"
 
 using namespace std;
 using namespace Dyninst;

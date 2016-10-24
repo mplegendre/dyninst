@@ -28,16 +28,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <assert.h>
 #include <list>
 #include <cstring>
 #include "boost/functional/hash.hpp"
 #include "common/src/headers.h"
 #include "Module.h"
-#include "Serialization.h"
-
-#include <functional>
-#include <iostream>
 
 using namespace Dyninst;
 using namespace Dyninst::SymtabAPI;
@@ -69,9 +64,8 @@ bool LineInformation::addLine( std::string lineSource,
                                Offset lowInclusiveAddr,
                                Offset highExclusiveAddr )
 {
-    auto index = strings_->get<1>().insert(lineSource).first;
 
-    return addLine(index->str, lineNo, lineOffset, lowInclusiveAddr, highExclusiveAddr);
+    return addLine(insert_into_table(strings_, lineSource), lineNo, lineOffset, lowInclusiveAddr, highExclusiveAddr);
 }
 
 void LineInformation::addLineInfo(LineInformation *lineInfo)

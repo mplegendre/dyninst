@@ -31,8 +31,6 @@
 // $Id: Object.C,v 1.31 2008/11/03 15:19:25 jaw Exp $
 
 #include "annotations.h"
-#include "Annotatable.h"
-#include "common/src/serialize.h"
 
 AnnotationClass<localVarCollection> FunctionLocalVariablesAnno("FunctionLocalVariablesAnno");
 AnnotationClass<localVarCollection> FunctionParametersAnno("FunctionParametersAnno");

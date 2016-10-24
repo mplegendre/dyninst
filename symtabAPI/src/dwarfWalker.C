@@ -29,19 +29,12 @@
  */
 
 #include "dwarfWalker.h"
-#include "headers.h"
-#include "Module.h"
-#include "Symtab.h"
-#include "Collections.h"
 #include "dwarf.h"
-#include "Object.h"
-#include "Object-elf.h"
 #include "Function.h"
 #include "debug.h"
 #include "dwarfExprParser.h"
 #include "pathName.h"
-#include "debug_common.h"
-#include <boost/bind.hpp>
+
 using namespace Dyninst;
 using namespace SymtabAPI;
 using namespace Dwarf;

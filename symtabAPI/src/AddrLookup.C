@@ -29,16 +29,11 @@
  */
 
 #include "symtabAPI/h/Symtab.h"
-#include "symtabAPI/h/Symbol.h"
 #include "symtabAPI/h/AddrLookup.h"
 #include "symtabAPI/h/SymtabReader.h"
 
 #include "common/src/addrtranslate.h"
 
-
-#include <vector>
-#include <algorithm>
-#include <string>
 
 using namespace Dyninst;
 using namespace Dyninst::SymtabAPI;
