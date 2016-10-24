@@ -301,16 +301,8 @@ SYMTAB_EXPORT bool Symbol::setMangledName(std::string name)
    setStrIndex(-1);
    return true;
 }
-Serializable *Symbol::serialize_impl(SerializerBase *, const char *) THROW_SPEC (SerializerError)
-{
-   return NULL;
-}
 
-void Symbol::restore_module_and_region(SerializerBase *, std::string &, Offset) THROW_SPEC (SerializerError)
-{
-}
-
-std::ostream& Dyninst::SymtabAPI::operator<< (ostream &os, const Symbol &s) 
+std::ostream& Dyninst::SymtabAPI::operator<< (ostream &os, const Symbol &s)
 {
 	return os << "{"
                   << " mangled=" << s.getMangledName()

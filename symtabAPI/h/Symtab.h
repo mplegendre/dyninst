@@ -130,10 +130,7 @@ class SYMTAB_EXPORT Symtab : public LookupInterface,
    static Symtab *findOpenSymtab(std::string filename);
    static bool closeSymtab(Symtab *);
 
-    bool exportXML(std::string filename);
-   bool exportBin(std::string filename);
-   static Symtab *importBin(std::string filename);
-   bool getRegValueAtFrame(Address pc, 
+    bool getRegValueAtFrame(Address pc,
                                      Dyninst::MachRegister reg, 
                                      Dyninst::MachRegisterVal &reg_result,
                                      MemRegReader *reader);
@@ -629,9 +626,7 @@ class SYMTAB_EXPORT ExceptionBlock : public Serializable, public AnnotatableSpar
   // Accessors provide consistent access to the *original* offsets.
   // We allow this to be updated (e.g. to account for relocated code
    public:
-	  Serializable * serialize_impl(SerializerBase *sb, 
-			  const char *tag = "exceptionBlock") THROW_SPEC (SerializerError);
-      ExceptionBlock(Offset tStart, unsigned tSize, Offset cStart);
+    ExceptionBlock(Offset tStart, unsigned tSize, Offset cStart);
       ExceptionBlock(Offset cStart);
       ExceptionBlock(const ExceptionBlock &eb);
       ~ExceptionBlock();

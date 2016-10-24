@@ -136,10 +136,7 @@ class SYMTAB_EXPORT Region : public AnnotatableSparse {
 
    bool updateRelocations(Address start, Address end, Symbol *oldsym, Symbol *newsym);
 
-   Serializable * serialize_impl(SerializerBase *sb, 
-		   const char *tag = "Region") THROW_SPEC (SerializerError);
-
-   Symtab *symtab() const { return symtab_; }
+    Symtab *symtab() const { return symtab_; }
    protected:                     
    Region(unsigned regnum, std::string name, Offset diskOff,
 			unsigned long diskSize, Offset memOff, unsigned long memSize,

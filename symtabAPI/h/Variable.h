@@ -67,9 +67,7 @@ class SYMTAB_EXPORT Variable : public Aggregate, public Serializable, public Ann
    void setType(Type *type);
    Type *getType();
 
-   Serializable *serialize_impl(SerializerBase *sb, 
-		   const char *tag = "Variable") THROW_SPEC (SerializerError);
-   bool operator==(const Variable &v);
+    bool operator==(const Variable &v);
 
  private:
 
@@ -120,8 +118,6 @@ class SYMTAB_EXPORT localVar : public Serializable, public AnnotatableSparse
 	std::string &getFileName();
 	std::vector<VariableLocation> &getLocationLists();
 	bool operator==(const localVar &l);
-	Serializable *serialize_impl(SerializerBase *, 
-			const char * = "localVar") THROW_SPEC(SerializerError);
 };
 
 }

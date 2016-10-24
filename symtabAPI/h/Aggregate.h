@@ -121,12 +121,7 @@ class SYMTAB_EXPORT Aggregate
       Offset offset_;       // cached for speed
 
 
-      void restore_type_by_id(SerializerBase *, Type *&, unsigned) THROW_SPEC (SerializerError);
-      void restore_module_by_name(SerializerBase *, std::string &) THROW_SPEC (SerializerError);
-      //void rebuild_symbol_vector(SerializerBase *, std::vector<Offset> *) THROW_SPEC (SerializerError);
-      void rebuild_symbol_vector(SerializerBase *, std::vector<Address> &) THROW_SPEC (SerializerError);
-      void serialize_aggregate(SerializerBase *, const char * = "Aggregate") THROW_SPEC (SerializerError);
-      bool addMangledNameInternal(std::string name, bool isPrimary, bool demangle);
+    bool addMangledNameInternal(std::string name, bool isPrimary, bool demangle);
 };
 
 }

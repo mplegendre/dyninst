@@ -63,8 +63,7 @@ namespace Dyninst {
 		virtual ~AnnotationContainer() { }
 		virtual bool addItem_impl(T t) = 0;
 		bool addItem(T t) { return addItem_impl(t); }
-		virtual const char *getElementTypename() {return NULL;}
-		virtual Serializable *ac_serialize_impl(SerializerBase *, const char *) THROW_SPEC(SerializerError) { return NULL; };
+		virtual const char *getElementTypename() {return NULL;};
    };
 }
 

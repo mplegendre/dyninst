@@ -166,11 +166,8 @@ class SYMTAB_EXPORT FunctionBase
    /***** PPC64 Linux Specific Information *****/
    Offset getPtrOffset() const;
    Offset getTOCOffset() const;
-   
-   Serializable * serialize_impl(SerializerBase *sb, 
-                                const char *tag = "Function") THROW_SPEC (SerializerError);
 
-   virtual unsigned getSize() const;
+     virtual unsigned getSize() const;
    virtual std::string getName() const;
    virtual Offset getOffset() const { return Aggregate::getOffset(); }
    virtual bool addMangledName(std::string name, bool isPrimary, bool isDebug=false)

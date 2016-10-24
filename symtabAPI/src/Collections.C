@@ -109,52 +109,9 @@ std::vector<localVar *> *localVarCollection::getAllVars()
     return &localVars;
 }
 
-#if !defined(SERIALIZATION_DISABLED)
-Serializable *localVarCollection::ac_serialize_impl(SerializerBase *s, const char *tag) THROW_SPEC (SerializerError)
-{
-	unsigned short lvmagic = 72;
-	serialize_printf("%s[%d]:  welcome to localVarCollection: ac_serialize_impl\n", 
-			FILE__, __LINE__);
-	ifxml_start_element(s, tag);
-	gtranslate(s, lvmagic, "LocalVarMagicID");
-	gtranslate(s, localVars, "LocalVariables");
-	s->magic_check(FILE__, __LINE__);
-	ifxml_end_element(s, tag);
-
-	if (lvmagic != 72)
-	{
-           create_printf("\n\n%s[%d]: FIXME:  out-of-sync\n\n\n", FILE__, __LINE__);
-	}
-
-	serialize_printf("%s[%d]:  localVarCollection: ac_serialize_impl, translate done\n", FILE__, __LINE__);
-
-	if (s->isInput())
-	{
-		//  rebuild name->variable mapping
-		for (unsigned int i = 0; i < localVars.size(); ++i)
-		{
-			localVar *lv = localVars[i];
-			assert(lv);
-		}
-		serialize_printf("%s[%d]:  deserialized %ld local vars\n", FILE__, __LINE__, localVars.size());
-	}
-	else
-		serialize_printf("%s[%d]:  serialized %ld local vars\n", FILE__, __LINE__, localVars.size());
-
-	return NULL;
-}
-#else
-Serializable *localVarCollection::ac_serialize_impl(SerializerBase *, const char *) THROW_SPEC (SerializerError)
-{
-   return NULL;
-}
-#endif
-
 // Could be somewhere else... for DWARF-work.
 dyn_hash_map<void *, typeCollection *> typeCollection::fileToTypesMap;
-#if 0
-dyn_hash_map<int, std::vector<std::pair<dataClass, Type **> > > typeCollection::deferred_lookups;
-#endif
+
 dyn_hash_map<int, std::vector<std::pair<dataClass, Type **> > *> *deferred_lookups_p = NULL;
 
 void typeCollection::addDeferredLookup(int tid, dataClass tdc,Type **th)
@@ -490,70 +447,6 @@ vector<pair<string, Type *> > *typeCollection::getAllGlobalVariables() {
    return varsVec;
 }
 
-#if !defined(SERIALIZATION_DISABLED)
-Serializable *typeCollection::serialize_impl(SerializerBase *sb, const char *tag) THROW_SPEC (SerializerError)
-{
-	serialize_printf("%s[%d]:  enter typeCollection::serialize_impl\n", FILE__, __LINE__);
-
-	std::vector<std::pair<std::string, int> >  gvars;
-	dyn_hash_map<std::string, Type *>::iterator iter;
-	for (iter = globalVarsByName.begin(); iter != globalVarsByName.end(); iter++)
-		gvars.push_back(std::make_pair(iter->first, iter->second->getID()));
-
-	std::vector<Type *> ltypes;
-	dyn_hash_map<int, Type *>::iterator iter2;
-	for (iter2 = typesByID.begin(); iter2 != typesByID.end(); iter2++)
-	{
-		if (!iter2->second) assert(0);
-		//  try skipping field list types
-		//if (dynamic_cast<fieldListType *>(iter2->second)) continue;
-		assert (iter2->first == iter2->second->getID());
-		ltypes.push_back(iter2->second);
-	}
-
-	ifxml_start_element(sb, tag);
-	//gtranslate(sb, typesByID, "TypesByIDMap", "TypeToIDMapEntry");
-	gtranslate(sb, ltypes, "TypesInCollection", "TypeEntry");
-	gtranslate(sb, gvars, "GlobalVarNameToTypeMap", "GlobalVarType");
-	gtranslate(sb, dwarfParsed_, "DwarfParsedFlag");
-	ifxml_end_element(sb, tag);
-
-	if (is_input(sb))
-	{
-		for (unsigned int i = 0; i < ltypes.size(); ++i)
-		{
-			typesByID[ltypes[i]->getID()] = ltypes[i];
-		}
-		doDeferredLookups(this);
-
-		for (unsigned int i = 0; i < gvars.size(); ++i)
-		{
-			dyn_hash_map<int, Type *>::iterator iter = typesByID.find(gvars[i].second);
-			if (iter == typesByID.end())
-			{
-				serialize_printf("%s[%d]:  cannot find type w/ID %d\n", 
-						FILE__, __LINE__, gvars[i].second);
-				continue;
-			}
-			Type *t = iter->second;
-			globalVarsByName[gvars[i].first] = t;
-		}
-
-		dyn_hash_map<int, Type *>::iterator iter;
-		for (iter = typesByID.begin(); iter != typesByID.end(); iter++)
-			typesByName[iter->second->getName()] = iter->second;
-	}
-
-	serialize_printf("%s[%d]:  leave typeCollection::serialize_impl\n", FILE__, __LINE__);
-
-	return NULL;
-}
-#else
-Serializable *typeCollection::serialize_impl(SerializerBase *, const char *) THROW_SPEC (SerializerError)
-{
-   return NULL;
-}
-#endif
 
 /*
  * builtInTypeCollection::builtInTypeCollection

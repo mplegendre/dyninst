@@ -1869,120 +1869,7 @@ Symtab::~Symtab()
 
 }	
 
-#if !defined(SERIALIZATION_DISABLED)
-bool Symtab::exportXML(string file)
-{
-#if defined (cap_serialization)
-   try 
-   {
-	   SerContext<Symtab> *scs = new SerContext<Symtab>(this, file);
-	   serialize(file, scs, ser_xml);
-#if 0
-	   SerContext<Symtab> *scs = new SerContext<Symtab>(this);
-	   SerializerXML *ser = new SerializerXML(scs, "XMLTranslator", file, sd_serialize, true);
-	   serialize(ser, "Symtab");
-#endif
-#if 0
-      SerializerXML sb("XMLTranslator", file, sd_serialize, true);
-      serialize(&sb, "Symtab");
-#endif
-   } 
-   catch (const SerializerError &err) 
-   {
-      return false;
-   }
-
-   return false;
-#else
-   return false;
-#endif
-}
-
-bool Symtab::exportBin(string file)
-{
-   try
-   {
-	   SerContext<Symtab> *scs = new SerContext<Symtab>(this, file);
-	   serialize(file, scs, ser_bin);
-	   return true;
-   }
-
-   catch (const SerializerError &err)
-   {
-      if (err.code() == SerializerError::ser_err_disabled) 
-      {
-         return false;
-      }
-
-   }
-
-   return false;
-}
-
-Symtab *Symtab::importBin(std::string file)
-{
-#if defined (cap_serialization)
-   MappedFile *mf= MappedFile::createMappedFile(file);
-   if (!mf) 
-   {
-      return NULL;
-   }
-
-   Symtab *st = new Symtab(mf);
-
-   try
-   {
-	   SerContext<Symtab> *scs = new SerContext<Symtab>(st, file);
-	   if (!st->deserialize(file, scs))
-	   {
-		   delete st;
-		   return NULL;
-	   }
-
-	   return st;
-   }
-
-   catch (const SerializerError &err)
-   {
-      if (err.code() == SerializerError::ser_err_disabled) 
-      {
-         serialize_printf("%s[%d]:  WARN:  serialization is disabled for file %s\n",
-               FILE__, __LINE__, file.c_str());
-         return NULL;
-      }
-
-      serialize_printf("%s[%d]: %s\n\tfrom: %s[%d]\n", FILE__, __LINE__,
-            err.what(), err.file().c_str(), err.line());
-   }
-
-
-   serialize_printf("%s[%d]:  error doing binary deserialization\n", __FILE__, __LINE__);
-   delete st;
-   return NULL;
-#else
-   serialize_printf("%s[%d]:  WARNING:  cannot produce %s, serialization not available\n", FILE__, __LINE__, file.c_str());
-   return NULL;
-#endif
-}
-
-#else
-bool Symtab::exportXML(string)
-{
-   return false;
-}
-
-bool Symtab::exportBin(string) 
-{
-   return false;
-}
-
-Symtab *Symtab::importBin(std::string)
-{
-   return NULL;
-}
-#endif
-
-bool Symtab::openFile(Symtab *&obj, void *mem_image, size_t size, 
+bool Symtab::openFile(Symtab *&obj, void *mem_image, size_t size,
                       std::string name, def_t def_bin)
 {
    bool err = false;
@@ -2109,37 +1996,20 @@ bool Symtab::openFile(Symtab *&obj, std::string filename, def_t def_binary)
    cout << __FILE__ << ":" << __LINE__ <<": openFile "<< filename<< " took "<<dursecs <<" msecs" << endl;
 #endif
 
-   if (!err)
-   {
-      if (filename.find("/proc") == std::string::npos)
-         allSymtabs.push_back(obj);
-
-
-#if defined (cap_serialization)
-#if 0
-      serialize_printf("%s[%d]:  doing bin-serialize for %s\n", 
-            FILE__, __LINE__, filename.c_str());
-
-      if (!obj->exportBin(filename))
-      {
-         serialize_printf("%s[%d]:  failed to export symtab\n", FILE__, __LINE__);
-      }
-      else
-         serialize_printf("%s[%d]:  did bin-serialize for %s\n", 
-                          FILE__, __LINE__, filename.c_str());
-#endif
-#endif
-
+    if (!err)
+    {
+        if (filename.find("/proc") == std::string::npos)
+            allSymtabs.push_back(obj);
     }
     else
     {
-       create_printf("%s[%d]: WARNING: failed to open symtab for %s\n", 
-             FILE__, __LINE__, filename.c_str());
-       delete obj;
-       obj = NULL;
+        create_printf("%s[%d]: WARNING: failed to open symtab for %s\n",
+                      FILE__, __LINE__, filename.c_str());
+        delete obj;
+        obj = NULL;
     }
 
-   // returns true on success (not an error)
+    // returns true on success (not an error)
    return !err;
 }
 
@@ -2941,24 +2811,6 @@ SYMTAB_EXPORT bool ExceptionBlock::contains(Offset a) const
    return (a >= tryStart_ && a < tryStart_ + trySize_); 
 }
 
-#if !defined(SERIALIZATION_DISABLED)
-Serializable * ExceptionBlock::serialize_impl(SerializerBase *sb, const char *tag) THROW_SPEC (SerializerError)
-{
-	ifxml_start_element(sb, tag);
-	gtranslate(sb, tryStart_, "tryStart");
-	gtranslate(sb, trySize_, "trySize");
-	gtranslate(sb, catchStart_, "catchStart");
-	gtranslate(sb, hasTry_, "hasTry");
-	ifxml_end_element(sb, tag);
-	return NULL;
-}
-#else
-Serializable * ExceptionBlock::serialize_impl(SerializerBase *, const char *) THROW_SPEC (SerializerError)
-{
-   return NULL;
-}
-#endif
-
 SYMTAB_EXPORT relocationEntry::relocationEntry() :
    target_addr_(0), 
    rel_addr_(0), 
@@ -3240,53 +3092,8 @@ void Symtab::parseTypesNow()
    parseTypes();
 }
 
-#if defined (cap_serialization)
-//  Not sure this is strictly necessary, problems only seem to exist with Module 
-// annotations when the file was split off, so there's probably something else that
-//  can be done to instantiate the relevant functions.
-
-bool dummy_for_ser_instance(std::string file, SerializerBase *sb)
-{
-   if (file == std::string("no_such_file")) 
-   {
-      if (!sb) 
-      {
-         return false;
-      }
-   }
-   return true;
-}
-
-#endif
 
 
-#if !defined(SERIALIZATION_DISABLED)
-SYMTAB_EXPORT SerializerBase *nonpublic_make_bin_symtab_serializer(Symtab *t, std::string file)
-{
-	SerializerBin *ser;
-	SerContext<Symtab> *scs = new SerContext<Symtab>(t, file);
-	ser = new SerializerBin(scs, "SerializerBin", file, sd_serialize, false);
-	return ser;
-}
-
-SYMTAB_EXPORT SerializerBase *nonpublic_make_bin_symtab_deserializer(Symtab *t, std::string file)
-{
-	SerializerBin *ser;
-	SerContext<Symtab> *scs = new SerContext<Symtab>(t, file);
-	ser = new SerializerBin(scs, "DeserializerBin", file, sd_deserialize, false);
-	return ser;
-}
-
-SYMTAB_EXPORT void nonpublic_free_bin_symtab_serializer(SerializerBase *sb)
-{
-	SerializerBin *sbin = dynamic_cast<SerializerBin *>(sb);
-	if (sbin)
-	{
-		delete(sbin);
-	}
-
-}
-#endif
 
 SYMTAB_EXPORT Offset Symtab::getElfDynamicOffset()
 {

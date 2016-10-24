@@ -244,20 +244,7 @@ bool Aggregate::changeSymbolOffset(Symbol *sym)
     return true;
 }
 
-void Aggregate::restore_type_by_id(SerializerBase *, Type *&, 
-                                   unsigned ) THROW_SPEC (SerializerError) 
-{
-}
-
-void Aggregate::restore_module_by_name(SerializerBase *, std::string &) THROW_SPEC (SerializerError)
-{
-}
-
 extern Symbol * getSymForID(SerializerBase *sb, Address id);
-
-void Aggregate::rebuild_symbol_vector(SerializerBase *, std::vector<Address> &) THROW_SPEC (SerializerError)
-{
-}
 
 std::ostream &operator<<(std::ostream &os, const Dyninst::SymtabAPI::Aggregate &a)
 {
@@ -279,10 +266,6 @@ std::ostream &operator<<(std::ostream &os, const Dyninst::SymtabAPI::Aggregate &
   os << " }";
   
   return os;
-}
-
-void Aggregate::serialize_aggregate(SerializerBase *, const char *) THROW_SPEC (SerializerError)
-{
 }
 
 bool Aggregate::operator==(const Aggregate &a)

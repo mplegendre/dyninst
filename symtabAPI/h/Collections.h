@@ -63,9 +63,8 @@ public:
 
   void addLocalVar(localVar * var);
   localVar * findLocalVar(std::string &name);
-  std::vector<localVar *> *getAllVars();  
+  std::vector<localVar *> *getAllVars();
 
-  Serializable *ac_serialize_impl(SerializerBase *, const char * = "localVarCollection") THROW_SPEC (SerializerError);
 };
   
 
@@ -97,8 +96,7 @@ class SYMTAB_EXPORT typeCollection : public Serializable//, public AnnotatableSp
     // DWARF...
     bool dwarfParsed_;
 
-	Serializable *serialize_impl(SerializerBase *, const char * = "typeCollection") THROW_SPEC (SerializerError);
-	public:
+public:
     typeCollection();
     ~typeCollection();
 public:

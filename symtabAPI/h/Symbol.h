@@ -282,13 +282,6 @@ class SYMTAB_EXPORT Symbol : public Serializable,
 
    bool versionHidden_;
 
-   void restore_module_and_region(SerializerBase *, 
-		   std::string &, Offset) THROW_SPEC (SerializerError);
-
-   public:
-
-   Serializable * serialize_impl(SerializerBase *, 
-		   const char *tag = "Symbol") THROW_SPEC (SerializerError);
 };
 
 class SYMTAB_EXPORT LookupInterface 
