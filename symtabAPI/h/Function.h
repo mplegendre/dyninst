@@ -37,7 +37,6 @@
 #define _Function_h_
 
 #include "Annotatable.h"
-#include "Serialization.h"
 #include "Aggregate.h"
 #include "Variable.h"
 #include "IBSTree.h"

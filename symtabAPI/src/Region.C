@@ -30,7 +30,6 @@
 
 #include "Region.h"
 #include "Symtab.h"
-#include "common/src/serialize.h"
 #include <iostream>
 
 using namespace Dyninst;

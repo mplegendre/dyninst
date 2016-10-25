@@ -31,7 +31,6 @@
 #ifndef __Type_h__
 #define __Type_h__
 
-#include "Serialization.h"
 #include "Annotatable.h"
 #include "symutil.h"
 

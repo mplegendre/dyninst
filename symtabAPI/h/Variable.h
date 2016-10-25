@@ -32,7 +32,6 @@
 #define _Variable_h_
 
 #include "Annotatable.h"
-#include "Serialization.h"
 #include "Symtab.h"
 #include "Aggregate.h"
 #include "dyn_regs.h"

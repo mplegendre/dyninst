@@ -33,8 +33,6 @@
 #include "common/src/headers.h"
 #include "dyntypes.h"
 #include "Annotatable.h"
-#include "Serialization.h"
-#include "common/src/serialize.h"
 
 using namespace Dyninst;
 

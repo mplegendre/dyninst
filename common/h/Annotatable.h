@@ -43,7 +43,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Serialization.h"
 #include "util.h"
 
 namespace Dyninst
@@ -95,27 +94,6 @@ class AnnotationClass : public AnnotationClassBase {
 	  AnnotationClass(std::string n, anno_cmp_func_t cmp_func_) :
               AnnotationClassBase(n, cmp_func_)
 	  {
-#if !defined(SERIALIZATION_DISABLED)
-		if (NULL == s)
-		{
-			//  if the type is Serializable, use its serialization function
-			//  otherwise, leave it NULL so we don't accidentally dereference
-			//  a random pointer as if it were automatcally descended from
-			//  Serializable
-			if (boost::is_base_of<Serializable, T>::value)
-			{
-				serialize_func = ser_func_wrapper;
-			} else
-         if (boost::is_pointer<T>::value)
-			{
-				if (boost::is_base_of<Serializable, 
-						typename boost::remove_pointer<T>::type>::value)
-				{
-					serialize_func = ser_func_wrapper;
-				}
-			}
-		}
-#endif
 	  }
 
 	  const char *getTypeName() { return typeid(T).name();}
@@ -259,34 +237,6 @@ class COMMON_EXPORT AnnotatableDense
 		 }
 
 
-#if !defined(SERIALIZATION_DISABLED)
-		 //  If serialization is not enabled, there will be no serializer specified,
-		 //  so none of the below code will be executed.
-
-		 serialize_printf("%s[%d]:  %p addAnnotation:  serializer_index = %d\n", 
-				 FILE__, __LINE__, this, annotations->serializer_index);
-
-		 if (annotations && ( (unsigned short) -1 != annotations->serializer_index))
-		 {
-			 SerializerBase *sb = getExistingOutputSB(annotations->serializer_index);
-			 if (!sb)
-			 {
-				 //  definitely should have a serializer since we have an index
-				 fprintf(stderr, "%s[%d]:  FIXME:  no existing serializer!\n", FILE__, __LINE__);
-				 return false;
-			 }
-			 ser_func_t sf = a_id.getSerializeFunc();
-			 if (sf)
-			 {
-				 //  FIXME:  for xml support, ser_operation should have a corresponding 
-				 //  "ser_operation_end()" routine to close out the xml field.
-				 ser_post_op_t op = sp_add_anno;
-				 ser_operation(sb, op, "AnnotationAdd");
-				 void * aa = (void *) const_cast<T *>(a);
-				 serialize_post_annotation(this, aa, sb, &a_id, dense, "PostAnnotation");
-			 }
-		 }
-#endif
 
 		 return true;
 	  }
@@ -671,33 +621,7 @@ public:
 				return true;
             }
 
-#if !defined(SERIALIZATION_DISABLED)
-			dyn_hash_map<void *, unsigned short>::iterator seriter;
-			seriter = ser_ndx_map.find(this);
-			if (seriter != ser_ndx_map.end())
-			{
-				if (seriter->second != (unsigned short) -1)
-				{
-					SerializerBase *sb = getExistingOutputSB(seriter->second);
-					if (!sb)
-					{
-						fprintf(stderr, "%s[%d]:  FIXME:  no existing output SB\n", 
-								FILE__, __LINE__);
-						return false;
-					}
 
-					ser_func_t sf = a_id.getSerializeFunc();
-					if (sf)
-					{
-						ser_post_op_t op = sp_add_anno;
-						ser_operation(sb, op, "AnnotationAdd");
-						void *aa = (void *) const_cast<T *>(a);
-						serialize_post_annotation(this, aa, sb, &a_id, sparse, "PostAnnotation");
-					}
-				}
-			}
-#endif
-				
             return true;
          }
 

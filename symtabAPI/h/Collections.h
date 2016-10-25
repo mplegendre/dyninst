@@ -33,7 +33,6 @@
 
 #include "Type.h"
 #include "Variable.h"
-#include "Serialization.h"
 
 namespace Dyninst {
 

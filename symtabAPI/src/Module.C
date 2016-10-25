@@ -43,7 +43,6 @@
 #include "annotations.h"
 
 #include "common/src/pathName.h"
-#include "common/src/serialize.h"
 #include "Object.h"
 #include <boost/foreach.hpp>
 

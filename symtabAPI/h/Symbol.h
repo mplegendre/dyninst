@@ -43,7 +43,6 @@
 
 #include "symutil.h"
 #include "Annotatable.h"
-#include "Serialization.h"
 #include <boost/shared_ptr.hpp>
 
 #ifndef CASE_RETURN_STR

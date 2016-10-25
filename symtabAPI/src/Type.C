@@ -38,7 +38,6 @@
 #include "Module.h"
 #include "Collections.h"
 #include "Function.h"
-#include "common/src/serialize.h"
 
 #include "Type-mem.h"
 #include <iostream>

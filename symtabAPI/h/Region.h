@@ -30,7 +30,6 @@
 
 #ifndef __REGION__H__ 
 #define __REGION__H__
-#include "Serialization.h"
 #include "symutil.h"
 #include "Annotatable.h"
 
